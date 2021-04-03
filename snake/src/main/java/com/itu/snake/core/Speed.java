@@ -1,4 +1,4 @@
-package com.itu.snake;
+package com.itu.snake.core;
 
 public class Speed {
 	public static final Speed SLOWEST = new Speed(1000);
