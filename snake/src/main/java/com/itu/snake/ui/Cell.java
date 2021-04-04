@@ -18,18 +18,19 @@ public class Cell extends JPanel {
     public void setType(CellType type) {
         this.type = type;
         switch (this.type) {
-            case FOOD: {
+            case FOOD:
                 this.setBackground(Color.RED);
                 break;
-            }
-            case EMPTY: {
+
+            case EMPTY:
                 this.setBackground(Color.BLACK);
                 break;
-            }
-            case SNAKE_BODY, SNAKE_HEAD: {
+
+            case SNAKE_BODY:
+            case SNAKE_HEAD:
                 this.setBackground(Color.GREEN);
                 break;
-            }
+
         }
     }
 
