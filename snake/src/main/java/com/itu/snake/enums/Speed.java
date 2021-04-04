@@ -1,18 +1,24 @@
 package com.itu.snake.enums;
 
 public enum Speed {
-    SLOWEST(1000),
-    SLOW(800),
-    MEDIUM(600),
-    FAST(400),
-    FASTEST(100);
+    SLOWEST(800, 1),
+    SLOW(600, 2),
+    MEDIUM(400, 3),
+    FAST(200, 4),
+    FASTEST(50, 5);
 
     private int delay;
-    Speed(int delay) {
+    private int scoreWeight;
+    Speed(int delay, int scoreWeight) {
         this.delay = delay;
+        this.scoreWeight = scoreWeight;
     }
 
     public int getDelay() {
         return delay;
+    }
+
+    public int getScoreWeight() {
+        return scoreWeight;
     }
 }

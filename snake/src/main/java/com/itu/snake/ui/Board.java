@@ -15,29 +15,33 @@ public class Board extends JFrame {
   private Cell[][] cellMatrix;
   private JPanel gamePanel;
   private JPanel gameOverPanel;
+  private StatusPanel statusPanel;
 
   private Game game;
   private boolean directionSet = false;
 
-  public Board(int width, int height, int headRow, int headCol) {
-    this.width = width;
-    this.height = height;
+  public Board(int rows, int cols, int headRow, int headCol) {
+    this.width = cols * Cell.WIDTH;
+    this.height = rows * Cell.HEIGHT;
     this.initHeadRow = headRow;
     this.initHeadCol = headCol;
+    this.game = new Game(rows, cols, headRow, headCol);
 
     setTitle("Team 3 - Snake Game");
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     setLocationRelativeTo(null);
-    setMinimumSize(new Dimension(width, height+20));
+    setMinimumSize(new java.awt.Dimension(width, height+StatusPanel.STATUS_PANEL_HEIGHT));
 
     gamePanel = new JPanel();
     gamePanel.setSize(width, height);
+    gamePanel.setMinimumSize(new java.awt.Dimension(width, height));
 
-    int cols = this.width / Cell.WIDTH;
-    int rows = this.height / Cell.HEIGHT;
-    GridLayout layout = new GridLayout(rows, cols);
-    gamePanel.setLayout(layout);
+    GridBagLayout frameLayout = new GridBagLayout();
+    setLayout(frameLayout);
+
+    GridLayout panelLayout = new GridLayout(rows, cols);
+    gamePanel.setLayout(panelLayout);
     cellMatrix = new Cell[rows][cols];
     for (int r = 0; r < rows; r++) {
       for (int c = 0; c < cols; c++) {
@@ -45,6 +49,12 @@ public class Board extends JFrame {
         gamePanel.add(this.cellMatrix[r][c]);
       }
     }
+    statusPanel = new StatusPanel(width);
+
+    GridBagConstraints constraints = new GridBagConstraints();
+    constraints.gridx = 0;
+    constraints.gridy = 0;
+    add(statusPanel, constraints);
     pack();
     gamePanel.setVisible(true);
 
@@ -53,9 +63,11 @@ public class Board extends JFrame {
 
     gameOverPanel = new GameOverPanel(width, height);
     gameOverPanel.setVisible(false);
-    add(gamePanel);
-    add(gameOverPanel);
-    this.game = new Game(rows, cols, headRow, headCol);
+
+    constraints.gridx = 0;
+    constraints.gridy = 1;
+    add(gamePanel, constraints);
+    add(gameOverPanel, constraints);
   }
 
   public void run() {
@@ -79,6 +91,7 @@ public class Board extends JFrame {
       this.gamePanel.setVisible(true);
       this.gameOverPanel.setVisible(false);
     }
+    this.statusPanel.update(this.game);
     for (int r = 0; r < cellMatrix.length; r++) {
       for (int c = 0; c < cellMatrix[0].length; c++) {
         this.cellMatrix[r][c].setType(this.game.getMatrix().getCellTypeAt(r, c));

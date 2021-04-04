@@ -52,6 +52,7 @@ public class Game {
         if (nextSnakeHead.equals(food)) {
             nextSnakeHead = this.snake.eat(food);
             matrix.updateAt(nextSnakeHead.getRow(), nextSnakeHead.getCol(), CellType.SNAKE_HEAD);
+            this.increaseScore();
             this.applyFood();
         } else if (!isGameOver(nextSnakeHead)){
             Pair<Cell, Cell> move = this.snake.move();
@@ -61,6 +62,7 @@ public class Game {
             matrix.updateAt(removedTail.getRow(), removedTail.getCol(), CellType.EMPTY);
         } else {
             status = GameStatus.OVER;
+            this.score = 0;
         }
     }
 
@@ -84,6 +86,10 @@ public class Game {
         return this.speed.getSpeed();
     }
 
+    public int getScore() {
+        return score;
+    }
+
     private void applyFood() {
         this.food = generateFood();
         matrix.updateAt(food.getRow(), food.getCol(), CellType.FOOD);
@@ -103,5 +109,9 @@ public class Game {
             return true;
         }
         return this.snake.getBodies().contains(nextMove);
+    }
+
+    private void increaseScore() {
+        this.score += this.speed.getSpeed().getScoreWeight();
     }
 }

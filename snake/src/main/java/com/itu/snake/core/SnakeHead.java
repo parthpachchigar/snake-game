@@ -1,7 +1,5 @@
 package com.itu.snake.core;
 
-import org.apache.commons.math3.util.Pair;
-
 public class SnakeHead extends SnakeBody {
     private Direction direction;
     public SnakeHead(int row, int col, Direction direction) {
