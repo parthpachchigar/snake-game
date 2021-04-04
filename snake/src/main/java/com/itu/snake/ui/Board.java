@@ -3,6 +3,7 @@ package com.itu.snake.ui;
 import com.itu.snake.core.Direction;
 import com.itu.snake.core.Game;
 
+import com.itu.snake.core.GameStats;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -13,6 +14,7 @@ public class Board extends JFrame {
   private int width;
   private int height;
   private Cell[][] cellMatrix;
+  private JLabel score;
 
   private Game game;
   private boolean directionSet = false;
@@ -24,19 +26,37 @@ public class Board extends JFrame {
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     setResizable(false);
-    setMinimumSize(new java.awt.Dimension(width, height));
     setLocationRelativeTo(null);
     int cols = this.width / Cell.WIDTH;
     int rows = this.height / Cell.HEIGHT;
-    GridLayout layout = new GridLayout(rows, cols);
-    setLayout(layout);
+    GridBagLayout frameLayout = new GridBagLayout();
+    GridLayout panelLayout = new GridLayout(rows, cols);
+    setLayout(frameLayout);
+    JPanel gridPanel = new JPanel();
+    gridPanel.setLayout(panelLayout);
+    gridPanel.setMinimumSize(new java.awt.Dimension(width, height));
     cellMatrix = new Cell[rows][cols];
     for (int r = 0; r < rows; r++) {
       for (int c = 0; c < cols; c++) {
         this.cellMatrix[r][c] = new Cell();
-        add(this.cellMatrix[r][c]);
+        gridPanel.add(this.cellMatrix[r][c]);
       }
     }
+    score = new JLabel(String.format("Score: %05d", GameStats.getScore()));
+    score.setSize(width, 15);
+    score.setSize(width, 15);
+    JLabel footer = new JLabel("Footer");
+    footer.setSize(width, 15);
+    GridBagConstraints constraints = new GridBagConstraints();
+    constraints.gridx = 0;
+    constraints.gridy = 0;
+    add(score, constraints);
+    constraints.gridx = 0;
+    constraints.gridy = 1;
+    add(gridPanel, constraints);
+    constraints.gridx = 0;
+    constraints.gridy = 2;
+    add(footer, constraints);
     addKeyListener();
     setVisible(true);
     pack();
@@ -48,6 +68,7 @@ public class Board extends JFrame {
       try {
         TimeUnit.MILLISECONDS.sleep(500);
         this.game.run();
+        this.score.setText(String.format("Score: %05d", GameStats.getScore()));
         this.render();
       } catch (InterruptedException e) {
         e.printStackTrace();

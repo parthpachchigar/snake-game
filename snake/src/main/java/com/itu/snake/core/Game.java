@@ -38,6 +38,7 @@ public class Game {
         Cell removedTail = null;
         if (nextSnakeHead.equalsTo(food)) {
             nextSnakeHead = this.snake.eat(food);
+            GameStats.increaseScore(1);
             this.applyFood();
         } else {
             // TODO: check if game over
