@@ -1,5 +1,7 @@
 package com.itu.snake.core;
 
+import java.util.Objects;
+
 public class Cell {
     private int row;
     private int col;
@@ -17,7 +19,14 @@ public class Cell {
         return row;
     }
 
-    public boolean equalsTo(Cell cell) {
-        return (this.row == cell.row) && (this.col == cell.col);
+    @Override
+    public boolean equals(Object o) {
+        Cell cell = (Cell) o;
+        return row == cell.row && col == cell.col;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(row, col);
     }
 }
