@@ -1,27 +1,19 @@
 package com.itu.snake.core;
 
 public enum Direction {
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT;
+	UP("DOWN"),
+	DOWN("UP"),
+	LEFT("RIGHT"),
+	RIGHT("LEFT");
+
+	private String oppositeDirection;
+
+	Direction(String oppositeDirection) {
+		this.oppositeDirection = oppositeDirection;
+	}
 
 	public boolean isOpposite(Direction direction) {
-		switch (this) {
-			case UP: {
-				return direction == DOWN;
-			}
-			case DOWN: {
-				return direction == UP;
-			}
-			case LEFT: {
-				return direction == RIGHT;
-			}
-			case RIGHT: {
-				return direction == LEFT;
-			}
-		}
-		return false;
+		return Direction.valueOf(this.oppositeDirection) == direction;
 	}
 
 }

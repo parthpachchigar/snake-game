@@ -3,7 +3,6 @@ package com.itu.snake.ui;
 import com.itu.snake.enums.CellType;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class Cell extends JPanel {
     public static final int WIDTH = 10;
@@ -17,21 +16,7 @@ public class Cell extends JPanel {
 
     public void setType(CellType type) {
         this.type = type;
-        switch (this.type) {
-            case FOOD:
-                this.setBackground(Color.RED);
-                break;
-
-            case EMPTY:
-                this.setBackground(Color.BLACK);
-                break;
-
-            case SNAKE_BODY:
-            case SNAKE_HEAD:
-                this.setBackground(Color.GREEN);
-                break;
-
-        }
+        this.setBackground(type.getColor());
     }
 
     public CellType getType() {
