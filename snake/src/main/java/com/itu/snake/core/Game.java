@@ -1,6 +1,8 @@
 package com.itu.snake.core;
 
 import com.itu.snake.enums.CellType;
+import com.itu.snake.enums.GameStatus;
+import com.itu.snake.enums.Speed;
 import org.apache.commons.math3.util.Pair;
 
 import java.util.List;
@@ -11,10 +13,19 @@ public class Game {
     private CellMatrix matrix;
     private Snake snake;
     private Food food;
+    private GameStatus status;
+    private SpeedController speed;
+    private int score;
 
     public Game(int row, int col, int headRow, int headCol) {
         this.row = row;
         this.col = col;
+        this.speed = new SpeedController();
+        this.startNewGame(headRow, headCol);
+    }
+
+    public void startNewGame(int headRow, int headCol) {
+        this.status = GameStatus.ACTIVE;
         matrix = new CellMatrix(row, col);
         snake = new Snake(headRow, headCol);
         List<SnakeBody> bodies = snake.getBodies();
@@ -34,22 +45,49 @@ public class Game {
     }
 
     public void run() {
+        if (status == GameStatus.OVER || status == GameStatus.PAUSED) {
+            return;
+        }
         Cell nextSnakeHead = this.snake.attemptMove();
-        Cell removedTail = null;
-        if (nextSnakeHead.equalsTo(food)) {
+        if (nextSnakeHead.equals(food)) {
             nextSnakeHead = this.snake.eat(food);
-            GameStats.increaseScore(1);
+            matrix.updateAt(nextSnakeHead.getRow(), nextSnakeHead.getCol(), CellType.SNAKE_HEAD);
+            this.increaseScore();
             this.applyFood();
-        } else {
-            // TODO: check if game over
+        } else if (!isGameOver(nextSnakeHead)){
             Pair<Cell, Cell> move = this.snake.move();
             nextSnakeHead = move.getFirst();
-            removedTail = move.getSecond();
-        }
-        matrix.updateAt(nextSnakeHead.getRow(), nextSnakeHead.getCol(), CellType.SNAKE_HEAD);
-        if (removedTail != null) {
+            Cell removedTail = move.getSecond();
+            matrix.updateAt(nextSnakeHead.getRow(), nextSnakeHead.getCol(), CellType.SNAKE_HEAD);
             matrix.updateAt(removedTail.getRow(), removedTail.getCol(), CellType.EMPTY);
+        } else {
+            status = GameStatus.OVER;
+            this.score = 0;
         }
+    }
+
+    public GameStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(GameStatus status) {
+        this.status = status;
+    }
+
+    public Speed faster() {
+        return speed.faster();
+    }
+
+    public Speed slower() {
+        return speed.slower();
+    }
+
+    public Speed getSpeed() {
+        return this.speed.getSpeed();
+    }
+
+    public int getScore() {
+        return score;
     }
 
     private void applyFood() {
@@ -64,5 +102,16 @@ public class Game {
             return new Food(foodRow, foodCol);
         }
         return generateFood();
+    }
+
+    private boolean isGameOver(Cell nextMove) {
+        if (nextMove.getRow() >= this.row || nextMove.getCol() >= this.col || nextMove.getRow() < 0 || nextMove.getCol() < 0) {
+            return true;
+        }
+        return this.snake.getBodies().contains(nextMove);
+    }
+
+    private void increaseScore() {
+        this.score += this.speed.getSpeed().getScoreWeight();
     }
 }
