@@ -22,6 +22,8 @@ public class Game {
         this.row = row;
         this.col = col;
         this.speed = new SpeedController();
+        this.backgroundSound = new Sound("background.wav");
+        this.backgroundSound.setLoop();
         this.startNewGame(headRow, headCol);
     }
 
@@ -29,7 +31,6 @@ public class Game {
         this.status = GameStatus.ACTIVE;
         matrix = new CellMatrix(row, col);
         snake = new Snake(headRow, headCol);
-        backgroundSound = new Sound("background.wav");
         List<SnakeBody> bodies = snake.getBodies();
         for (int i = 0; i < bodies.size() - 1; i++) {
             matrix.updateAt(bodies.get(i).getRow(), bodies.get(i).getCol(), CellType.SNAKE_BODY);

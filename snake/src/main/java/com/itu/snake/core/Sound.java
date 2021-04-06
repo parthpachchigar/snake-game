@@ -32,4 +32,8 @@ public class Sound {
 	public boolean isActive() {
 		return clip.isActive();
 	}
+	
+	public void setLoop() {
+		clip.loop(-1);
+	}
 }
