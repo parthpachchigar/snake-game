@@ -16,11 +16,14 @@ public class Game {
     private GameStatus status;
     private SpeedController speed;
     private int score;
-
+    private Sound backgroundSound;
+    
     public Game(int row, int col, int headRow, int headCol) {
         this.row = row;
         this.col = col;
         this.speed = new SpeedController();
+        this.backgroundSound = new Sound("background.wav");
+        this.backgroundSound.setLoop();
         this.startNewGame(headRow, headCol);
     }
 
@@ -33,6 +36,7 @@ public class Game {
             matrix.updateAt(bodies.get(i).getRow(), bodies.get(i).getCol(), CellType.SNAKE_BODY);
         }
         matrix.updateAt(bodies.get(bodies.size() - 1).getRow(), bodies.get(bodies.size() - 1).getCol(), CellType.SNAKE_HEAD);
+        backgroundSound.playSound();
         this.applyFood();
     }
 
@@ -46,13 +50,21 @@ public class Game {
 
     public void run() {
         if (status == GameStatus.OVER || status == GameStatus.PAUSED) {
+        	if (backgroundSound.isActive()) {
+        		backgroundSound.stopSound();
+        	}
+        	
             return;
+        }
+        if (!backgroundSound.isActive()) {
+        	backgroundSound.playSound();
         }
         Cell nextSnakeHead = this.snake.attemptMove();
         if (nextSnakeHead.equals(food)) {
             nextSnakeHead = this.snake.eat(food);
             matrix.updateAt(nextSnakeHead.getRow(), nextSnakeHead.getCol(), CellType.SNAKE_HEAD);
             this.increaseScore();
+            new Sound("eat.wav").playSound();
             this.applyFood();
         } else if (!isGameOver(nextSnakeHead)){
             Pair<Cell, Cell> move = this.snake.move();
@@ -63,6 +75,8 @@ public class Game {
         } else {
             status = GameStatus.OVER;
             this.score = 0;
+            backgroundSound.stopSound();
+            new Sound("game_over.wav").playSound();
         }
     }
 
