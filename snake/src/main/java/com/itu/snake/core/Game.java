@@ -49,7 +49,14 @@ public class Game {
 
     public void run() {
         if (status == GameStatus.OVER || status == GameStatus.PAUSED) {
+        	if (backgroundSound.isActive()) {
+        		backgroundSound.stopSound();
+        	}
+        	
             return;
+        }
+        if (!backgroundSound.isActive()) {
+        	backgroundSound.playSound();
         }
         Cell nextSnakeHead = this.snake.attemptMove();
         if (nextSnakeHead.equals(food)) {

@@ -28,4 +28,8 @@ public class Sound {
 	public void stopSound() {
 		clip.stop();
 	}
+	
+	public boolean isActive() {
+		return clip.isActive();
+	}
 }
