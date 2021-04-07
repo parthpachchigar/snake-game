@@ -114,6 +114,22 @@ public class Game {
         return score;
     }
 
+    public void toggleTrees() {
+    	if (this.trees.isEmpty()) {
+    		for(int i = 0; i <= treesNumber; i++) {
+            	this.applyTree();
+            	this.trees.add(tree);
+            }
+    	} else {
+    		Iterator<Tree> it = this.trees.iterator();
+    		while(it.hasNext()) {
+    			Tree tree = it.next();
+    			matrix.updateAt(tree.getRow(), tree.getCol(), CellType.EMPTY);
+    		}
+    		this.trees.clear();   			
+    	}       
+    }
+    
     private void applyFood() {
         this.food = generateFood();
         matrix.updateAt(food.getRow(), food.getCol(), CellType.FOOD);
