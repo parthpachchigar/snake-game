@@ -1,16 +1,8 @@
 package com.itu.snake.ui;
 
-import com.itu.snake.enums.Direction;
-import com.itu.snake.core.Game;
-import com.itu.snake.enums.GameStatus;
-
-import com.itu.snake.game.GameStats;
 import com.itu.snake.tiles.Cell;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.util.concurrent.TimeUnit;
 
 public class Board extends JFrame {
   private int width, height, initHeadRow, initHeadCol;
