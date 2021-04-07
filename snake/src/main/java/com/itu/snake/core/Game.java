@@ -8,6 +8,7 @@ import org.apache.commons.math3.util.Pair;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Iterator;
 
 public class Game {
     public static int MAX_TREE_NUMBER = 20;
@@ -111,7 +112,20 @@ public class Game {
     public void setListener(GameListener listener) {
         this.listener = listener;
     }
-
+    
+    public void toggleTrees() {
+    	if (this.trees.isEmpty()) {
+    		this.applyTree();
+    	} else {
+    		Iterator<Tree> it = this.trees.iterator();
+    		while(it.hasNext()) {
+    			Tree tree = it.next();
+    			matrix.updateAt(tree.getRow(), tree.getCol(), CellType.EMPTY);
+    		}
+    		this.trees.clear();   			
+    	}       
+    }
+    
     private void applyFood() {
         this.food = generateFood();
         matrix.updateAt(food.getRow(), food.getCol(), CellType.FOOD);
