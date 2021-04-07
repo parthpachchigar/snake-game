@@ -12,14 +12,16 @@ import javax.swing.JPanel;
 
 import com.itu.snake.core.Direction;
 import com.itu.snake.core.Game;
+import com.itu.snake.core.GameListener;
 import com.itu.snake.enums.GameStatus;
 
-public class Board extends JFrame {
+public class Board extends JFrame implements GameListener {
   private int width, height, initHeadRow, initHeadCol;
   private Cell[][] cellMatrix;
   private JPanel gamePanel;
   private JPanel gameOverPanel;
   private StatusPanel statusPanel;
+  private SoundController soundController;
 
   private Game game;
   private boolean directionSet = false;
@@ -30,6 +32,7 @@ public class Board extends JFrame {
     this.initHeadRow = headRow;
     this.initHeadCol = headCol;
     this.game = new Game(rows, cols, headRow, headCol);
+    this.soundController = new SoundController();
 
     setTitle("Team 3 - Snake Game");
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -75,6 +78,8 @@ public class Board extends JFrame {
   }
 
   public void run() {
+    this.game.setListener(this);
+    this.game.startNewGame(initHeadRow, initHeadCol);
     while (true) {
       try {
         this.game.run();
@@ -88,13 +93,6 @@ public class Board extends JFrame {
 
   private void render() {
     pack();
-    if (game.getStatus() == GameStatus.OVER) {
-      this.gamePanel.setVisible(false);
-      this.gameOverPanel.setVisible(true);
-    } else {
-      this.gamePanel.setVisible(true);
-      this.gameOverPanel.setVisible(false);
-    }
     this.statusPanel.update(this.game);
     for (int r = 0; r < cellMatrix.length; r++) {
       for (int c = 0; c < cellMatrix[0].length; c++) {
@@ -151,4 +149,25 @@ public class Board extends JFrame {
     });
   }
 
+  @Override
+  public void onGameStatusChange(GameStatus status) {
+    if (status == GameStatus.OVER) {
+      soundController.playGameOver();
+      this.gamePanel.setVisible(false);
+      this.gameOverPanel.setVisible(true);
+    } else {
+      this.gamePanel.setVisible(true);
+      this.gameOverPanel.setVisible(false);
+      if (status == GameStatus.PAUSED) {
+        soundController.pauseBackground();
+      } else if (status == GameStatus.ACTIVE) {
+        soundController.resumeBackground();
+      }
+    }
+  }
+
+  @Override
+  public void onEat() {
+    soundController.playEat();
+  }
 }
