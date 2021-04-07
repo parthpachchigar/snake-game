@@ -3,30 +3,31 @@ package com.itu.snake.core;
 import java.util.Objects;
 
 public class Cell {
-    private int row;
-    private int col;
+    private int rowIndex;
+    private int columnIndex;
 
-    public Cell(int row, int col) {
-        this.row = row;
-        this.col = col;
+
+    public Cell(int rowIndex, int columnIndex) {
+        this.rowIndex = rowIndex;
+        this.columnIndex = columnIndex;
     }
 
-    public int getCol() {
-        return col;
+    public int getColumnIndex() {
+        return columnIndex;
     }
 
-    public int getRow() {
-        return row;
+    public int getRowIndex() {
+        return rowIndex;
     }
 
     @Override
     public boolean equals(Object o) {
         Cell cell = (Cell) o;
-        return row == cell.row && col == cell.col;
+        return rowIndex == cell.rowIndex && columnIndex == cell.columnIndex;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(row, col);
+        return Objects.hash(rowIndex, columnIndex);
     }
 }

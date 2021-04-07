@@ -3,10 +3,11 @@ package com.itu.snake.enums;
 import java.awt.Color;
 
 public enum CellType {
-    EMPTY(Color.BLACK),
+    EMPTY(new Color(0, 138, 0)),
     FOOD(Color.RED),
     SNAKE_BODY(Color.GREEN),
-    SNAKE_HEAD(Color.GREEN);
+    SNAKE_HEAD(Color.GREEN),
+    SNAKE_TAIL(Color.GREEN);
 
     private final Color color;
 
@@ -17,4 +18,5 @@ public enum CellType {
     public Color getColor() {
         return this.color;
     }
+
 }

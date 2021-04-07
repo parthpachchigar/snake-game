@@ -13,7 +13,7 @@ public class StatusPanel extends JLabel {
         this.setText(String.format("Speed: %s Score: %05d Game Status: %s", Speed.SLOWEST.toString(), 0, GameStatus.ACTIVE));
     }
 
-    public void update(Game game) {
-        this.setText(String.format("Speed: %s Score: %05d Game Status: %s", game.getSpeed().toString(), game.getScore(), game.getStatus().toString()));
-    }
+//    public void update(Game game) {
+//        this.setText(String.format("Speed: %s Score: %05d Game Status: %s", game.getSpeed().toString(), game.getScore(), game.getStatus().toString()));
+//    }
 }
