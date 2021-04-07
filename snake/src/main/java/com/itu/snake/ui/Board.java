@@ -110,17 +110,27 @@ public class Board extends JFrame {
       public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
         char ch = e.getKeyChar();
-        if (ch == 'a') {
-          game.startNewGame(initHeadRow, initHeadCol);
-        } else if (ch == 'f') {
-          game.faster();
-        } else if (ch == 's') {
-          game.slower();
-        } else if (ch == 'p') {
-          game.setStatus(GameStatus.PAUSED);
-        } else if (ch == 'r') {
-          game.setStatus(GameStatus.ACTIVE);
-        } else {
+        switch (ch) {
+        	case 'a':
+        		game.startNewGame(initHeadRow, initHeadCol);
+        		break;
+        	case 'f':
+        		game.faster();
+        		break;
+        	case 's':
+        		game.slower();
+        		break;
+        	case 'p': 
+        		if (game.getStatus() == GameStatus.ACTIVE) {
+        			game.setStatus(GameStatus.PAUSED);
+        			break;
+        		} else game.setStatus(GameStatus.ACTIVE);
+        		break;
+        	case 't':
+        		game.toggleTrees();
+        		break;
+        	
+        }
           if (directionSet) {
             // Do not set the direction when previous key pressed event triggered.
             return;
@@ -134,7 +144,7 @@ public class Board extends JFrame {
           } else if(code == KeyEvent.VK_UP || code == KeyEvent.VK_KP_UP) {
             directionSet = game.setDirection(Direction.UP);
           }
-        }
+        
       }
 
       @Override
