@@ -5,8 +5,9 @@ import java.awt.Color;
 public enum CellType {
     EMPTY(Color.BLACK),
     FOOD(Color.RED),
-    SNAKE_BODY(Color.GREEN),
-    SNAKE_HEAD(Color.GREEN);
+    SNAKE_BODY(Color.YELLOW),
+    SNAKE_HEAD(Color.YELLOW),
+	TREE(Color.GREEN);
 
     private final Color color;
 
