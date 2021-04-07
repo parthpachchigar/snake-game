@@ -1,6 +1,8 @@
 package com.itu.snake.ui;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Objects;
 
@@ -14,10 +16,9 @@ public class Sound {
 	public Sound(String sound) {
 		AudioInputStream audioInputStream;
 		try {
-			String path = Objects.requireNonNull(this.getClass().getClassLoader()
-					.getResource(sound)).getPath()
-					.replaceAll("%20", " ");
-			audioInputStream = AudioSystem.getAudioInputStream(new File(path));
+			InputStream inputStream = Objects.requireNonNull(this.getClass().getClassLoader()
+					.getResourceAsStream(sound));
+			audioInputStream = AudioSystem.getAudioInputStream(new BufferedInputStream(inputStream));
 			clip = AudioSystem.getClip();
 			clip.open(audioInputStream);
 		} catch (Exception e) {
