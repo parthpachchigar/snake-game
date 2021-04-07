@@ -1,14 +1,18 @@
 package com.itu.snake.ui;
 
-import com.itu.snake.core.Direction;
-import com.itu.snake.core.Game;
-import com.itu.snake.enums.GameStatus;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.concurrent.TimeUnit;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import com.itu.snake.core.Direction;
+import com.itu.snake.core.Game;
+import com.itu.snake.enums.GameStatus;
 
 public class Board extends JFrame {
   private int width, height, initHeadRow, initHeadCol;
@@ -111,6 +115,7 @@ public class Board extends JFrame {
         int code = e.getKeyCode();
         char ch = e.getKeyChar();
         if (ch == 'a') {
+          game.setScore(0);
           game.startNewGame(initHeadRow, initHeadCol);
         } else if (ch == 'f') {
           game.faster();
@@ -120,6 +125,9 @@ public class Board extends JFrame {
           game.setStatus(GameStatus.PAUSED);
         } else if (ch == 'r') {
           game.setStatus(GameStatus.ACTIVE);
+        } else if (ch == 'c' && game.getStatus() == GameStatus.OVER) {
+          game.startNewGame(initHeadRow, initHeadCol);
+          game.setScore(game.getScore()/2);
         } else {
           if (directionSet) {
             // Do not set the direction when previous key pressed event triggered.

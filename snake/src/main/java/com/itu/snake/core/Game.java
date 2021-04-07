@@ -33,7 +33,7 @@ public class Game {
     }
 
     public void startNewGame(int headRow, int headCol) {
-        this.status = GameStatus.ACTIVE;
+        this.status = GameStatus.PAUSED;
         matrix = new CellMatrix(row, col);
         snake = new Snake(headRow, headCol);
         trees = new LinkedList<Tree>();
@@ -84,7 +84,6 @@ public class Game {
             matrix.updateAt(removedTail.getRow(), removedTail.getCol(), CellType.EMPTY);
         } else {
             status = GameStatus.OVER;
-            this.score = 0;
             backgroundSound.stopSound();
             new Sound("game_over.wav").playSound();
         }
@@ -113,7 +112,11 @@ public class Game {
     public int getScore() {
         return score;
     }
-
+    
+    public void setScore(int score) {
+    	this.score = score;
+    }
+    
     private void applyFood() {
         this.food = generateFood();
         matrix.updateAt(food.getRow(), food.getCol(), CellType.FOOD);
