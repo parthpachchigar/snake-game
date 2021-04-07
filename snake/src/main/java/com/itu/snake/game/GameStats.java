@@ -18,6 +18,10 @@ public class GameStats {
     return score;
   }
 
+  public static void changeScoreToHalf() {
+    score /= 2;
+  }
+
   public static Speed getSpeed() {
     return speed;
   }
@@ -27,11 +31,11 @@ public class GameStats {
   }
 
   public static void increaseScore() {
-    GameStats.score += speed.getScoreWeight();
+    score += speed.getScoreWeight();
   }
 
   public static void decreaseScore(int amount) {
-    GameStats.score -= amount;
+    score -= amount;
   }
 
   public static void setStatus(GameStatus status) {

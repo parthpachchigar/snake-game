@@ -6,16 +6,20 @@ import com.itu.snake.enums.GameStatus;
 import com.itu.snake.game.GameStats;
 import com.itu.snake.tiles.Food;
 import com.itu.snake.tiles.SnakeBody;
+import com.itu.snake.tiles.Tree;
 import com.itu.snake.ui.Board;
 import com.itu.snake.tiles.Cell;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class Game implements KeyListener {
+  public static int MAX_TREE_NUMBER = 20;
 
   private static Board board;
   private static Snake snake;
@@ -24,10 +28,10 @@ public class Game implements KeyListener {
   private int columns;
   private int headRow;
   private int headCol;
-  //private Snake snake;
   private Food foodCell;
   private Sound backgroundSound;
   private boolean directionSet;
+  private List<Tree> trees;
 
   public Game(int rows, int columns, int headRow, int headCol) {
     this.rows = rows;
@@ -35,9 +39,9 @@ public class Game implements KeyListener {
     this.headRow = headRow;
     this.headCol = headCol;
     this.backgroundSound = new Sound("background.wav");
-    this.backgroundSound.setLoop();
-    this.backgroundSound.stopSound();
     this.directionSet = false;
+    this.trees = new ArrayList<>(MAX_TREE_NUMBER);
+
     this.startNewGame();
   }
 
@@ -46,14 +50,13 @@ public class Game implements KeyListener {
     snake = new Snake(this.headRow, this.headCol);
 
     GameStats.init();
-    board.updateStatus();
+    board.updateStatus(snake.getDirection());
     board.addKeyboardListener(this);
 
     List<SnakeBody> bodies = snake.getBodies();
     updateBoard(bodies);
 
     this.applyFood();
-    //backgroundSound.playSound();
     this.run();
   }
 
@@ -69,21 +72,34 @@ public class Game implements KeyListener {
       return;
     }
     if (!backgroundSound.isActive()) {
-      backgroundSound.playSound();
+      backgroundSound.playSoundInLoop();
     }
     Cell nextSnakeHead = snake.attemptMove();
-    if (board.getCell(nextSnakeHead.getRowIndex(), nextSnakeHead.getColumnIndex()).getType() == CellType.FOOD) {
+    if(isOutOfBound(nextSnakeHead)) {
+      gameOver();
+      return;
+    }
+    nextSnakeHead = board.getCell(nextSnakeHead.getRowIndex(), nextSnakeHead.getColumnIndex());
+    if(nextSnakeHead.getType() == CellType.SNAKE_BODY
+        || nextSnakeHead.getType() == CellType.SNAKE_TAIL
+        || nextSnakeHead.getType() == CellType.TREE) {
+      gameOver();
+      return;
+    }
+    if (nextSnakeHead.getType() == CellType.FOOD) {
       updateBoard(snake.eat(foodCell));
       GameStats.increaseScore();
-      new Sound("eat.wav").playSound();
+      new Thread(){
+        @Override
+        public void run() {
+          new Sound("eat.wav").playSound();
+        }
+      }.start();
+
       this.applyFood();
-    } else if (!isGameOver(nextSnakeHead)) {
-      updateBoard(snake.moveForward());
-    } else {
-      GameStats.setStatus(GameStatus.OVER);
-      backgroundSound.stopSound();
-      new Sound("game_over.wav").playSound();
     }
+    updateBoard(snake.moveForward());
+
   }
 
   private void applyFood() {
@@ -105,12 +121,15 @@ public class Game implements KeyListener {
     return generateFood();
   }
 
-  private boolean isGameOver(Cell nextMove) {
-      if (nextMove.getRowIndex() >= this.rows || nextMove.getColumnIndex() >= this.columns || nextMove.getRowIndex() < 0 || nextMove.getColumnIndex() < 0) {
-          return true;
-      }
-      return nextMove.getType() == CellType.SNAKE_BODY
-          || nextMove.getType() == CellType.SNAKE_TAIL;
+  private boolean isOutOfBound(Cell nextMove) {
+      return nextMove.getRowIndex() >= this.rows || nextMove.getColumnIndex() >= this.columns || nextMove.getRowIndex() < 0 || nextMove.getColumnIndex() < 0;
+  }
+
+  private void gameOver() {
+    GameStats.setStatus(GameStatus.OVER);
+    backgroundSound.stopSound();
+    new Sound("game_over.wav").playSound();
+    board.showMessageOnStatus(String.format("Game over! Your score is %d. Press 'c' to try cheating", GameStats.getScore()));
   }
 
   private void updateBoard(List<? extends Cell> updatedCells) {
@@ -131,9 +150,7 @@ public class Game implements KeyListener {
   public void keyPressed(KeyEvent e) {
     int code = e.getKeyCode();
     char ch = e.getKeyChar();
-    if (ch == 'a') {
-      this.startNewGame();
-    } else if (ch == 'f') {
+    if (ch == 'f') {
       GameStats.increaseSpeed();
     } else if (ch == 's') {
       GameStats.decreaseSpeed();
@@ -141,8 +158,28 @@ public class Game implements KeyListener {
       GameStats.setStatus(GameStatus.PAUSED);
     } else if (ch == 'r') {
       GameStats.setStatus(GameStatus.ACTIVE);
-    } else {
-      if (directionSet) {
+    } else if (ch == 'c' && GameStats.getStatus() == GameStatus.OVER) {
+      if(GameStats.getScore() == 0) {
+        board.showMessageOnStatus(String
+            .format("You need score other than 0 to cheat. Your score: %d",
+                GameStats.getScore()));
+      } else {
+        GameStats.changeScoreToHalf();
+        GameStats.setStatus(GameStatus.PAUSED);
+        board.updateStatus(snake.getDirection());
+      }
+    } else if (ch == 't') {
+      GameStats.setStatus(GameStatus.PAUSED);
+      if(this.trees.isEmpty()){
+        applyTree();
+      } else {
+        clearTree();
+      }
+    }  else {
+      if(GameStats.getStatus() == GameStatus.OVER) {
+        return;
+      }
+      if (directionSet && GameStats.getStatus() != GameStatus.PAUSED) {
         // Do not set the direction when previous key pressed event triggered.
         return;
       }
@@ -155,7 +192,9 @@ public class Game implements KeyListener {
       } else if(code == KeyEvent.VK_UP || code == KeyEvent.VK_KP_UP) {
         directionSet = snake.setDirection(Direction.UP);
       }
+
     }
+    board.updateStatus(snake.getDirection());
   }
 
   @Override
@@ -166,7 +205,7 @@ public class Game implements KeyListener {
   public void run() {
     while(true) {
       takeStep();
-      board.updateStatus();
+      board.updateStatus(snake.getDirection());
       this.directionSet = false;
       try {
         TimeUnit.MILLISECONDS.sleep(GameStats.getSpeed().getDelay());
@@ -174,5 +213,32 @@ public class Game implements KeyListener {
         e.printStackTrace();
       }
     }
+  }
+
+  private void applyTree() {
+    for (int i = 0; i < MAX_TREE_NUMBER; i++) {
+      Tree tree = generateTree();
+      this.trees.add(tree);
+    }
+    updateBoard(this.trees);
+  }
+
+  private void clearTree() {
+    List<Cell> emptyCells = new ArrayList<>();
+    for(Tree tree : this.trees) {
+      emptyCells.add(new Cell(tree.getRowIndex(), tree.getColumnIndex()));
+    }
+    this.trees = new LinkedList<>();
+    updateBoard(emptyCells);
+  }
+
+  private Tree generateTree() {
+    Random random = new Random();
+    int treeRow = random.nextInt(rows);
+    int treeCol = random.nextInt(columns);
+    if (board.getCell(treeRow, treeCol).getType() == CellType.EMPTY) {
+      return new Tree(treeRow, treeCol);
+    }
+    return generateTree();
   }
 }

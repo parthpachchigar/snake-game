@@ -1,8 +1,6 @@
 package com.itu.snake.ui;
 
-import com.itu.snake.core.Game;
-import com.itu.snake.enums.GameStatus;
-import com.itu.snake.enums.Speed;
+import com.itu.snake.enums.Direction;
 
 import com.itu.snake.game.GameStats;
 import javax.swing.*;
@@ -15,7 +13,11 @@ public class StatusPanel extends JLabel {
         this.setText("Loading...");
     }
 
-    public void update() {
-        this.setText(String.format("Speed: %-10s Score: %05d %5s Game Status: %s", GameStats.getSpeed().toString(), GameStats.getScore(), "", GameStats.getStatus().toString()));
+    public void update(Direction direction) {
+        this.setText(String.format("Speed: %-10s Score: %05d          Game Status: %-10s Snake Direction: %-10s", GameStats.getSpeed().toString(), GameStats.getScore(), GameStats.getStatus().toString(), direction.toString()));
+    }
+
+    public void showMessage(String msg) {
+        this.setText(msg);
     }
 }

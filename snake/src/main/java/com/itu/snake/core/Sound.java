@@ -25,15 +25,16 @@ public class Sound {
 		clip.start();
 	}
 
+	public void playSoundInLoop() {
+		clip.start();
+		clip.loop(-1);
+	}
+
 	public void stopSound() {
 		clip.stop();
 	}
 	
 	public boolean isActive() {
 		return clip.isActive();
-	}
-	
-	public void setLoop() {
-		clip.loop(-1);
 	}
 }

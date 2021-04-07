@@ -1,15 +1,17 @@
 package com.itu.snake.ui;
 
+import com.itu.snake.enums.Direction;
+import com.itu.snake.enums.GameStatus;
+import com.itu.snake.game.GameStats;
 import com.itu.snake.tiles.Cell;
 import java.awt.event.KeyListener;
 import javax.swing.*;
 import java.awt.*;
 
 public class Board extends JFrame {
-  private int width, height, initHeadRow, initHeadCol;
+  private int width, height;
   private Cell[][] cellMatrix;
   private JPanel gamePanel;
-  private JPanel gameOverPanel;
   private StatusPanel statusPanel;
 
   public Board(int rows, int columns) {
@@ -47,13 +49,9 @@ public class Board extends JFrame {
     //addKeyListener();
     setVisible(true);
 
-    gameOverPanel = new GameOverPanel(width, height);
-    gameOverPanel.setVisible(false);
-
     constraints.gridx = 0;
     constraints.gridy = 1;
     add(gamePanel, constraints);
-    add(gameOverPanel, constraints);
     pack();
   }
 
@@ -65,8 +63,15 @@ public class Board extends JFrame {
     return this.cellMatrix[rowIndex][columnIndex];
   }
 
-  public void updateStatus() {
-    this.statusPanel.update();
+  public void updateStatus(Direction direction) {
+    if(!statusPanel.getText().startsWith("Speed") && GameStats.getStatus() == GameStatus.OVER) {
+      return;
+    }
+    this.statusPanel.update(direction);
+  }
+
+  public void showMessageOnStatus(String message) {
+    this.statusPanel.showMessage(message);
   }
 
 }

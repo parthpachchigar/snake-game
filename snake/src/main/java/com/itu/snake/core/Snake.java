@@ -42,6 +42,10 @@ public class Snake {
     return true;
   }
 
+  public Direction getDirection() {
+    return this.direction;
+  }
+
   public SnakeHead attemptMove() {
     return snakeHead.getNextHead(this.direction);
   }
