@@ -5,7 +5,7 @@ public enum Speed {
     SLOW(600, 2),
     MEDIUM(400, 3),
     FAST(200, 4),
-    FASTEST(50, 5);
+    FASTEST(100, 5);
 
     private int delay;
     private int scoreWeight;
