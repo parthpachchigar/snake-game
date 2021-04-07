@@ -7,7 +7,8 @@ public enum CellType {
     FOOD(Color.RED),
     SNAKE_BODY(Color.GREEN),
     SNAKE_HEAD(Color.GREEN),
-    SNAKE_TAIL(Color.GREEN);
+    SNAKE_TAIL(Color.GREEN),
+    TREE(Color.YELLOW);
 
     private final Color color;
 

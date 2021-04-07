@@ -1,6 +1,7 @@
 package com.itu.snake.ui;
 
 import com.itu.snake.tiles.Cell;
+import java.awt.event.KeyListener;
 import javax.swing.*;
 import java.awt.*;
 
@@ -56,51 +57,16 @@ public class Board extends JFrame {
     pack();
   }
 
-//  private void addKeyListener() {
-//    addKeyListener(new KeyListener() {
-//      @Override
-//      public void keyTyped(KeyEvent e) {
-//      }
-
-//      @Override
-//      public void keyPressed(KeyEvent e) {
-//        int code = e.getKeyCode();
-//        char ch = e.getKeyChar();
-//        if (ch == 'a') {
-//          game.startNewGame(initHeadRow, initHeadCol);
-//        } else if (ch == 'f') {
-//          GameStats.increaseSpeed();
-//        } else if (ch == 's') {
-//          GameStats.decreaseSpeed();
-//        } else if (ch == 'p') {
-//          game.setStatus(GameStatus.PAUSED);
-//        } else if (ch == 'r') {
-//          game.setStatus(GameStatus.ACTIVE);
-//        } else {
-//          if (directionSet) {
-//            // Do not set the direction when previous key pressed event triggered.
-//            return;
-//          }
-//          if (code == KeyEvent.VK_LEFT || code == KeyEvent.VK_KP_LEFT) {
-//            directionSet = game.setDirection(Direction.LEFT);
-//          } else if(code == KeyEvent.VK_RIGHT || code == KeyEvent.VK_KP_RIGHT) {
-//            directionSet = game.setDirection(Direction.RIGHT);
-//          } else if(code == KeyEvent.VK_DOWN || code == KeyEvent.VK_KP_DOWN) {
-//            directionSet = game.setDirection(Direction.DOWN);
-//          } else if(code == KeyEvent.VK_UP || code == KeyEvent.VK_KP_UP) {
-//            directionSet = game.setDirection(Direction.UP);
-//          }
-//        }
-//      }
-//
-//      @Override
-//      public void keyReleased(KeyEvent e) {
-//      }
-//    });
-//  }
+  public void addKeyboardListener(KeyListener listener) {
+    this.addKeyListener(listener);
+  }
 
   public Cell getCell(int rowIndex, int columnIndex) {
     return this.cellMatrix[rowIndex][columnIndex];
+  }
+
+  public void updateStatus() {
+    this.statusPanel.update();
   }
 
 }

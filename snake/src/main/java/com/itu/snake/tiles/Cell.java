@@ -71,6 +71,9 @@ public class Cell extends JLabel {
 
   @Override
   public boolean equals(Object o) {
+    if(!(o instanceof Cell)) {
+      return false;
+    }
     Cell cell = (Cell) o;
     return rowIndex == cell.rowIndex
         && columnIndex == cell.columnIndex
@@ -90,6 +93,7 @@ public class Cell extends JLabel {
       this.setIcon(this.iconImg);
       return;
     }
+    this.setIcon(this.iconImg);
     this.setBackground(type.getColor());
   }
 }
