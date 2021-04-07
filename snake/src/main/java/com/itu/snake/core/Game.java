@@ -5,6 +5,8 @@ import com.itu.snake.enums.GameStatus;
 import com.itu.snake.enums.Speed;
 import org.apache.commons.math3.util.Pair;
 
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -13,6 +15,9 @@ public class Game {
     private CellMatrix matrix;
     private Snake snake;
     private Food food;
+    private Tree tree;
+    private LinkedList<Tree> trees;
+    private int treesNumber = 20;
     private GameStatus status;
     private SpeedController speed;
     private int score;
@@ -31,6 +36,11 @@ public class Game {
         this.status = GameStatus.ACTIVE;
         matrix = new CellMatrix(row, col);
         snake = new Snake(headRow, headCol);
+        trees = new LinkedList<Tree>();
+        for(int i = 0; i <= treesNumber; i++) {
+        	this.applyTree();
+        	trees.add(tree);
+        }
         List<SnakeBody> bodies = snake.getBodies();
         for (int i = 0; i < bodies.size() - 1; i++) {
             matrix.updateAt(bodies.get(i).getRow(), bodies.get(i).getCol(), CellType.SNAKE_BODY);
@@ -117,11 +127,34 @@ public class Game {
         }
         return generateFood();
     }
+    
+    private void applyTree() {
+        this.tree = generateTree();
+        matrix.updateAt(tree.getRow(), tree.getCol(), CellType.TREE);
+    }
+    private Tree generateTree() {
+        Random random = new Random();
+        int treeRow = random.nextInt(row);
+        int treeCol = random.nextInt(col);
+        if (this.matrix.getCellTypeAt(treeRow, treeCol) == CellType.EMPTY) {
+            return new Tree(treeRow, treeCol);
+        }
+        return generateTree();
+    }
+    
 
     private boolean isGameOver(Cell nextMove) {
         if (nextMove.getRow() >= this.row || nextMove.getCol() >= this.col || nextMove.getRow() < 0 || nextMove.getCol() < 0) {
             return true;
         }
+        Iterator<Tree> it = trees.iterator();
+		while(it.hasNext())
+		{
+			Tree tree = it.next();
+			if(nextMove.getRow() == tree.getRow() && nextMove.getCol() == tree.getCol())
+				return true;
+		}
+		
         return this.snake.getBodies().contains(nextMove);
     }
 
