@@ -3,7 +3,6 @@ package com.itu.snake.tiles;
 import com.itu.snake.core.Icons;
 import com.itu.snake.enums.CellType;
 
-import com.itu.snake.enums.Direction;
 import java.awt.Dimension;
 import javax.swing.*;
 
@@ -15,7 +14,7 @@ public class Cell extends JLabel {
   private int rowIndex;
   private int columnIndex;
   private CellType type;
-  private Direction direction;
+  private Icon iconImg;
 
   public Cell(int rowIndex, int columnIndex) {
     this.rowIndex = rowIndex;
@@ -24,20 +23,32 @@ public class Cell extends JLabel {
     setPreferredSize(new Dimension(WIDTH, HEIGHT));
     this.setVisible(true);
     this.setOpaque(true);
-    this.direction = null;
     this.setType(CellType.EMPTY);
+    this.iconImg = Icons.getIcon(this.getType(), null);
     this.setIconOrBackground();
   }
 
-  public Cell(int rowIndex, int columnIndex, CellType type, Direction direction) {
+  public Cell(int rowIndex, int columnIndex, CellType type) {
     this.rowIndex = rowIndex;
     this.columnIndex = columnIndex;
     setSize(WIDTH, HEIGHT);
     setPreferredSize(new Dimension(WIDTH, HEIGHT));
     this.setVisible(true);
     this.setOpaque(true);
-    this.direction = direction;
     this.setType(type);
+    this.iconImg = Icons.getIcon(this.getType(), null);
+    this.setIconOrBackground();
+  }
+
+  public Cell(int rowIndex, int columnIndex, CellType type, Icon iconImg) {
+    this.rowIndex = rowIndex;
+    this.columnIndex = columnIndex;
+    setSize(WIDTH, HEIGHT);
+    setPreferredSize(new Dimension(WIDTH, HEIGHT));
+    this.setVisible(true);
+    this.setOpaque(true);
+    this.setType(type);
+    this.iconImg = iconImg;
     this.setIconOrBackground();
   }
 
@@ -53,14 +64,6 @@ public class Cell extends JLabel {
     this.type = type;
   }
 
-  public void setIconOrBackground() {
-    Icon icon = Icons.getIcon(this.type, this.direction);
-    if (icon != null) {
-      this.setIcon(icon);
-      return;
-    }
-    this.setBackground(type.getColor());
-  }
 
   public CellType getType() {
     return type;
@@ -74,11 +77,19 @@ public class Cell extends JLabel {
         && type == cell.getType();
   }
 
-  public void setDirection(Direction direction) {
-    this.direction = direction;
+  public Icon getIconImg() {
+    return this.iconImg;
   }
 
-  public Direction getDirection() {
-    return this.direction;
+  public void setIconImg(Icon icon) {
+    this.iconImg = icon;
+  }
+
+  public void setIconOrBackground() {
+    if (this.iconImg != null) {
+      this.setIcon(this.iconImg);
+      return;
+    }
+    this.setBackground(type.getColor());
   }
 }
