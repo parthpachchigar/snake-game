@@ -113,7 +113,6 @@ public class Board extends JFrame implements GameListener {
         int code = e.getKeyCode();
         char ch = e.getKeyChar();
         if (ch == 'a') {
-          game.setScore(0);
           game.startNewGame(initHeadRow, initHeadCol);
         } else if (ch == 'f') {
           game.faster();
@@ -124,12 +123,15 @@ public class Board extends JFrame implements GameListener {
         } else if (ch == 'r') {
           game.setStatus(GameStatus.ACTIVE);
         } else if (ch == 'c' && game.getStatus() == GameStatus.OVER) {
-          game.startNewGame(initHeadRow, initHeadCol);
-          game.setScore(game.getScore()/2);
+          game.setStatus(GameStatus.CHEAT);
         } else {
           if (directionSet) {
             // Do not set the direction when previous key pressed event triggered.
             return;
+          }
+          if (game.getStatus() == GameStatus.CHEAT) {
+            // press any butter to resume game form cheating.
+            game.setStatus(GameStatus.ACTIVE);
           }
           if (code == KeyEvent.VK_LEFT || code == KeyEvent.VK_KP_LEFT) {
             directionSet = game.setDirection(Direction.LEFT);

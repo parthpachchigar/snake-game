@@ -5,18 +5,18 @@ import com.itu.snake.enums.GameStatus;
 import com.itu.snake.enums.Speed;
 import org.apache.commons.math3.util.Pair;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class Game {
+    public static int MAX_TREE_NUMBER = 20;
+
     private int row, col;
     private CellMatrix matrix;
     private Snake snake;
     private Food food;
-    private Tree tree;
-    private LinkedList<Tree> trees;
-    private int treesNumber = 20;
+    private ArrayList<Tree> trees;
     private GameStatus status;
     private SpeedController speed;
     private GameListener listener;
@@ -31,20 +31,17 @@ public class Game {
 
     public void startNewGame(int headRow, int headCol) {
         this.setStatus(GameStatus.ACTIVE);
-        this.setScore(0);
+        this.score = 0;
         matrix = new CellMatrix(row, col);
         snake = new Snake(headRow, headCol);
-        trees = new LinkedList<Tree>();
-        for(int i = 0; i <= treesNumber; i++) {
-        	this.applyTree();
-        	trees.add(tree);
-        }
+        trees = new ArrayList<>();
         List<SnakeBody> bodies = snake.getBodies();
         for (int i = 0; i < bodies.size() - 1; i++) {
             matrix.updateAt(bodies.get(i).getRow(), bodies.get(i).getCol(), CellType.SNAKE_BODY);
         }
         matrix.updateAt(bodies.get(bodies.size() - 1).getRow(), bodies.get(bodies.size() - 1).getCol(), CellType.SNAKE_HEAD);
         this.applyFood();
+        this.applyTree();
     }
 
     public CellMatrix getMatrix() {
@@ -56,7 +53,7 @@ public class Game {
     }
 
     public void run() {
-        if (status == GameStatus.OVER || status == GameStatus.PAUSED) {
+        if (status == GameStatus.OVER || status == GameStatus.PAUSED || status == GameStatus.CHEAT) {
             return;
         }
         Cell nextSnakeHead = this.snake.attemptMove();
@@ -83,6 +80,9 @@ public class Game {
 
     public void setStatus(GameStatus status) {
         this.status = status;
+        if (status == GameStatus.CHEAT) {
+            score = score / 2;
+        }
         if (listener != null) {
             listener.onGameStatusChange(status);
         }
@@ -127,8 +127,11 @@ public class Game {
     }
 
     private void applyTree() {
-        this.tree = generateTree();
-        matrix.updateAt(tree.getRow(), tree.getCol(), CellType.TREE);
+        for (int i = 0; i < MAX_TREE_NUMBER; i++) {
+            Tree tree = generateTree();
+            this.trees.add(tree);
+            matrix.updateAt(tree.getRow(), tree.getCol(), CellType.TREE);
+        }
     }
     private Tree generateTree() {
         Random random = new Random();
@@ -145,15 +148,7 @@ public class Game {
         if (nextMove.getRow() >= this.row || nextMove.getCol() >= this.col || nextMove.getRow() < 0 || nextMove.getCol() < 0) {
             return true;
         }
-        Iterator<Tree> it = trees.iterator();
-		while(it.hasNext())
-		{
-			Tree tree = it.next();
-			if(nextMove.getRow() == tree.getRow() && nextMove.getCol() == tree.getCol())
-				return true;
-		}
-
-        return this.snake.getBodies().contains(nextMove);
+        return this.snake.getBodies().contains(nextMove) || this.trees.contains(nextMove);
     }
 
     private void increaseScore() {
