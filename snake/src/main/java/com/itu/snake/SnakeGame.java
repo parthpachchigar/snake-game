@@ -1,7 +1,10 @@
 package com.itu.snake;
 
+import com.itu.snake.ui.Board;
+
 public class SnakeGame {
   public static void main(String[] args) {
-    System.out.println("Hello from Snake Game!");
+    Board gameBoard = new Board(30, 40, 10, 20);
+    gameBoard.run();
   }
 }
