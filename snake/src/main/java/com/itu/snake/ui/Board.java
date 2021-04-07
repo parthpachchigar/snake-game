@@ -1,5 +1,6 @@
 package com.itu.snake.ui;
 
+import com.itu.snake.core.Popup;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -118,6 +119,9 @@ public class Board extends JFrame implements GameListener {
           game.faster();
         } else if (ch == 's') {
           game.slower();
+        } else if (ch == 'h') {
+          game.setStatus(GameStatus.PAUSED);
+          new Popup();
         } else if (ch == 'p') {
           game.setStatus(GameStatus.PAUSED);
         } else if (ch == 'r') {
