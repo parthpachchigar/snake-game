@@ -18,16 +18,16 @@ public class Popup {
     Container container = helpbox.getContentPane();
     container.setLayout(null);
 
-    JLabel instruction = new JLabel("Instruction");
+    JLabel instruction = new JLabel("Instructions:");
     instruction.setBounds(20, 30, 250, 30);
 
-    JLabel sp = new JLabel("press 'f' to speedup, 's' to slowdown ");
+    JLabel sp = new JLabel("* press 'f' to speedup, 's' to slowdown ");
     sp.setBounds(20, 60, 250, 30);
 
-    JLabel dr = new JLabel("press up/down/left/right for directions");
+    JLabel dr = new JLabel("* press up/down/left/right arrow for directions");
     dr.setBounds(20, 90, 250, 30);
 
-    JLabel restart = new JLabel("press 'p' to pause, 'r' for resume");
+    JLabel restart = new JLabel("* press 'p' to pause, 'r' for resume");
     restart.setBounds(20, 120, 250, 30);
 
     container.add(instruction);

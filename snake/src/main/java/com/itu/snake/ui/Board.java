@@ -18,7 +18,7 @@ public class Board extends JFrame {
     this.width = columns * Cell.WIDTH;
     this.height = rows * Cell.HEIGHT;
 
-    setTitle("Team 3 - Snake Game");
+    setTitle("Team 3 - Snake Game (Press 'h' for help)");
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     setMinimumSize(new java.awt.Dimension(width, height+StatusPanel.STATUS_PANEL_HEIGHT));
