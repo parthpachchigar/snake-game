@@ -119,6 +119,8 @@ public class Board extends JFrame implements GameListener {
           game.faster();
         } else if (ch == 's') {
           game.slower();
+        } else if (ch == 't') {
+          game.toggleTrees();
         } else if (ch == 'h') {
           game.setStatus(GameStatus.PAUSED);
           new Popup();
