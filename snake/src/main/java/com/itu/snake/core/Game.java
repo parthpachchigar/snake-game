@@ -156,6 +156,8 @@ public class Game implements KeyListener {
       GameStats.decreaseSpeed();
     } else if (ch == 'p') {
       GameStats.setStatus(GameStatus.PAUSED);
+    } else if(ch == 'h') {
+      new Popup();
     } else if (ch == 'r') {
       GameStats.setStatus(GameStatus.ACTIVE);
     } else if (ch == 'c' && GameStats.getStatus() == GameStatus.OVER) {
