@@ -1,5 +1,5 @@
 # snake-game
-ITU CSC-518 Java Programming course project.
+CSC-518 Java Programming course project.
 
 # Contribution Guidelines
 We will contribute based on the task we pick from trello board of the project https://trello.com/b/CjbfXNWL/snake-game-kanban
